@@ -1,0 +1,23 @@
+version: '3'
+services:
+  mysql-mariadb:
+    build: './mysql'
+    env_file: ./.env
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+  nginx:
+    build: './nginx'
+    volumes:
+      - ./public_html:/home/public_html
+      - ./shared:/home/shared:rw
+    ports:
+      - 8000:80
+    depends_on:
+      - php-fpm
+      - mysql-mariadb
+  php-fpm:
+    build: './php-fpm'
+    volumes:
+      - ./public_html:/home/public_html
+      - ./shared:/home/shared:rw
+    env_file: ./.env
